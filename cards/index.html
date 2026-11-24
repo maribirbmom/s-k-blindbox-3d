@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Cards – Kishan &amp; Sheena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #dff0fb; --ink: #3b3550; --line: #3b3550; --chip: #ffffff; --chip-on: #3b3550; --chip-on-ink: #ffffff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1f2a33; --ink: #e9eef2; --line: #9fb2c1; --chip: #2a3844; --chip-on: #e9eef2; --chip-on-ink: #1f2a33; } }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  #top { position: fixed; top: 0; left: 0; right: 0; z-index: 3; padding: 10px 12px 18px; background: linear-gradient(var(--bg) 55%, transparent); display: flex; flex-direction: column; gap: 8px; }
+  #bar { display: flex; align-items: center; gap: 10px; }
+  #bar a.back { font-size: 12px; letter-spacing: .12em; color: var(--ink); text-decoration: none; opacity: .75; border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
+  h1 { margin: 0; font: italic 600 22px Lora, Georgia, serif; }
+  #chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  #chips::-webkit-scrollbar { display: none; }
+  button.chip { flex: none; font: inherit; font-size: 13px; border: 1.5px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+  button.chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+  #bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; padding: 28px 12px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: linear-gradient(transparent, var(--bg) 60%); pointer-events: none; }
+  #bottom > * { pointer-events: auto; }
+  #title { font: italic 600 20px Lora, Georgia, serif; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  a.cta, button.cta { font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; color: #3b2a22; background: #f2c6d0; border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+  button.cta.alt { background: var(--chip); color: var(--ink); border: 1.5px solid var(--line); font-weight: 500; }
+  #hint { font-size: 11px; letter-spacing: .12em; opacity: .65; }
+  #load { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; font: italic 600 20px Lora, Georgia, serif; opacity: .7; pointer-events: none; transition: opacity .3s; }
+  canvas { display: block; touch-action: none; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="top">
+  <div id="bar"><a class="back" href="../">&#8592; HOME</a><h1>The Cards</h1></div>
+  <div id="chips" role="tablist" aria-label="Pick a card"></div>
+</div>
+<div id="load">Loading…</div>
+<div id="bottom">
+  <div id="title"></div>
+  <div class="row">
+    <a class="cta" href="scan/">📸 Scan a real card</a>
+    <button class="cta alt" id="spin" aria-pressed="true">Spin: on</button>
+  </div>
+  <div id="hint">DRAG TO TURN · PINCH TO ZOOM</div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+// [name, file, camera distance, look-at height]
+const CARDS = [
+  ['Back in the day', 'card0.opt.glb', 1.4, 1.1],
+  ['Aloo Tikki Day', 'card1.opt.glb', 1.5, 1.3],
+  ['It Takes Two', 'card2.opt.glb', 1.5, 1.6],
+  ['Best Friend', 'card3.opt.glb', 1.3, 2.3],
+  ['Puri Gossips', 'card4.opt.glb', 1.5, 1.4],
+  ['Late Night Philosophy', 'card5.opt.glb', 1.6, 1.8],
+  ['Couch Crew', 'card6.opt.glb', 1.3, 1.3],
+  ['Generational Selfie', 'card7.opt.glb', 1.3, 1.3],
+  ['Selfie Squad', 'card8.opt.glb', 1.3, 1.3],
+  ['Birthday Special', 'card9.opt.glb', 1.4, 1.4],
+  ['Wig Day', 'card10.opt.glb', 1.3, 1.4],
+  ['Family Trip', 'card11.opt.glb', 1.4, 1.7],
+];
+
+const dark = matchMedia('(prefers-color-scheme: dark)');
+const bgColor = () => new THREE.Color(dark.matches ? 0x1f2a33 : 0xdff0fb);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = bgColor();
+dark.addEventListener('change', () => { scene.background = bgColor(); });
+scene.add(new THREE.HemisphereLight(0xffffff, 0xc9b896, 1.5));
+const sun = new THREE.DirectionalLight(0xfff1d6, 2.0); sun.position.set(3, 6, 4); scene.add(sun);
+const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.1, 100);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.autoRotate = true; controls.autoRotateSpeed = 1.2; controls.enableDamping = true; controls.enablePan = false;
+
+const chips = document.getElementById('chips'), load = document.getElementById('load'), title = document.getElementById('title');
+const buttons = CARDS.map(([name], i) => {
+  const b = document.createElement('button'); b.className = 'chip'; b.textContent = (i + 1) + '. ' + name; b.setAttribute('aria-pressed', 'false');
+  b.onclick = () => show(i); chips.appendChild(b); return b;
+});
+const spin = document.getElementById('spin');
+spin.onclick = () => { controls.autoRotate = !controls.autoRotate; spin.textContent = 'Spin: ' + (controls.autoRotate ? 'on' : 'off'); spin.setAttribute('aria-pressed', controls.autoRotate); };
+
+const loader = new GLTFLoader(), clock = new THREE.Clock();
+let current, mixer, token = 0;
+function fit() {                                    // keep the whole diorama in view on tall phone screens too
+  const a = innerWidth / innerHeight;
+  return a < 0.8 ? 1.5 : a < 1.3 ? 1.25 : 1;
+}
+async function show(i) {
+  const my = ++token;
+  buttons.forEach((b, k) => b.setAttribute('aria-pressed', k === i));
+  buttons[i].scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  title.textContent = CARDS[i][0];
+  try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+  load.style.opacity = 1;
+  const [, file, dist, ty] = CARDS[i];
+  let gltf;
+  try { gltf = await loader.loadAsync('models/' + file); } catch (e) { load.textContent = 'Could not load this one'; return; }
+  if (my !== token) return;
+  if (current) scene.remove(current);
+  current = gltf.scene; scene.add(current);
+  mixer = new THREE.AnimationMixer(current);
+  gltf.animations.forEach((c) => mixer.clipAction(c).play());
+  const d = dist * fit();
+  camera.position.set(d * 3.2, ty + d * 1.6, d * 4.8);
+  controls.target.set(0, ty, 0); controls.update();
+  load.style.opacity = 0;
+}
+addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); });
+renderer.setAnimationLoop(() => { if (mixer) mixer.update(clock.getDelta()); controls.update(); renderer.render(scene, camera); });
+const start = Number(location.hash.slice(1));
+show(start >= 1 && start <= CARDS.length ? start - 1 : 0);
+</script>
+</body>
+</html>
