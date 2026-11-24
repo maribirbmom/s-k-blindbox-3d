@@ -29,7 +29,7 @@
   <button id="start" style="pointer-events:auto;margin-top:8px;font:inherit;font-size:17px;font-weight:600;color:#3b2a22;background:#f2c6d0;border:0;border-radius:999px;padding:12px 26px;cursor:pointer">Start camera</button>
   <small id="note" style="opacity:.7;max-width:300px">If nothing happens, open this link in Safari or Chrome, not inside another app.</small>
 </div>
-<button id="mode" style="position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:20;font:12px system-ui,sans-serif;letter-spacing:.06em;color:#3b2a22;background:#fffd;border:0;border-radius:999px;padding:7px 14px;display:none">Holding the card up</button>
+<button id="mode" style="position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:20;font:12px system-ui,sans-serif;letter-spacing:.06em;color:#3b2a22;background:#fffd;border:0;border-radius:999px;padding:7px 14px;display:none">Floating above the card</button>
 <div id="hint"><span>Point the camera at the card</span></div>
 
 <!--
@@ -37,7 +37,7 @@
   The card lies flat on the XY plane with +Z toward the viewer, so models are rotated 90° on X to stand upright.
   Card 0 model: diorama base ~4 units wide, scaled to ~0.9 of the card width.
 -->
-<a-scene mindar-image="imageTargetSrc: ./models/targets.mind; maxTrack: 2; filterMinCF: 0.0005; filterBeta: 0.003; uiLoading: no; uiScanning: no; uiError: yes; autoStart: false"
+<a-scene mindar-image="imageTargetSrc: ./models/targets.mind; maxTrack: 2; filterMinCF: 0.001; filterBeta: 1000; missTolerance: 10; warmupTolerance: 3; uiLoading: no; uiScanning: no; uiError: yes; autoStart: false"
          color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true"
          vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
   <a-assets>
@@ -49,7 +49,7 @@
 
   <!-- Card 0: "Back in the day" -->
   <a-entity id="t0" mindar-image-target="targetIndex: 0">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.22 0.22 0.22">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.22 0.22 0.22">
       <a-gltf-model data-src="./models/card0.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.35; dir: alternate; dur: 1800; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -58,7 +58,7 @@
 
   <!-- Card 1: "Aloo Tikki Day" -->
   <a-entity id="t1" mindar-image-target="targetIndex: 1">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.17 0.17 0.17">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.17 0.17 0.17">
       <a-gltf-model data-src="./models/card1.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.35; dir: alternate; dur: 1800; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -67,7 +67,7 @@
 
   <!-- Card 2: "It Takes Two" (no bobbing: petals and hearts animate inside the model) -->
   <a-entity id="t2" mindar-image-target="targetIndex: 2">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.16 0.16 0.16">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.16 0.16 0.16">
       <a-gltf-model data-src="./models/card2.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -76,7 +76,7 @@
 
   <!-- Card 3: "Mother-Daughter Bond" -->
   <a-entity id="t3" mindar-image-target="targetIndex: 3">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.14 0.14 0.14">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.14 0.14 0.14">
       <a-gltf-model data-src="./models/card3.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -85,7 +85,7 @@
 
   <!-- Card 4: "Pani Puri Time" -->
   <a-entity id="t4" mindar-image-target="targetIndex: 4">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.14 0.14 0.14">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.14 0.14 0.14">
       <a-gltf-model data-src="./models/card4.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -94,7 +94,7 @@
 
   <!-- Card 5: "Past Midnight" -->
   <a-entity id="t5" mindar-image-target="targetIndex: 5">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.1 0.1 0.1">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.1 0.1 0.1">
       <a-gltf-model data-src="./models/card5.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -103,7 +103,7 @@
 
   <!-- Card 6: "Couch Crew" -->
   <a-entity id="t6" mindar-image-target="targetIndex: 6">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.16 0.16 0.16">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.16 0.16 0.16">
       <a-gltf-model data-src="./models/card6.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -112,7 +112,7 @@
 
   <!-- Card 7: "Generational Selfie" -->
   <a-entity id="t7" mindar-image-target="targetIndex: 7">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.16 0.16 0.16">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.16 0.16 0.16">
       <a-gltf-model data-src="./models/card7.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -121,7 +121,7 @@
 
   <!-- Card 8: "Selfie Squad" -->
   <a-entity id="t8" mindar-image-target="targetIndex: 8">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.16 0.16 0.16">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.16 0.16 0.16">
       <a-gltf-model data-src="./models/card8.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -130,7 +130,7 @@
 
   <!-- Card 9: "Birthday Special" -->
   <a-entity id="t9" mindar-image-target="targetIndex: 9">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.15 0.15 0.15">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.15 0.15 0.15">
       <a-gltf-model data-src="./models/card9.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -139,7 +139,7 @@
 
   <!-- Card 10: "Wig Day" -->
   <a-entity id="t10" mindar-image-target="targetIndex: 10">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.16 0.16 0.16">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.16 0.16 0.16">
       <a-gltf-model data-src="./models/card10.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -148,7 +148,7 @@
 
   <!-- Card 11: "Family Trip" -->
   <a-entity id="t11" mindar-image-target="targetIndex: 11">
-    <a-entity class="wrap" position="0 0 0.04" rotation="20 0 0" scale="0.14 0.14 0.14">
+    <a-entity class="wrap" position="0 0 0.22" rotation="75 0 0" scale="0.14 0.14 0.14">
       <a-gltf-model data-src="./models/card11.opt.glb" animation-mixer="clip: Idle; loop: repeat"
         animation="property: object3D.position.y; from: 0; to: 0.3; dir: alternate; dur: 2400; loop: true; easing: easeInOutSine">
       </a-gltf-model>
@@ -169,12 +169,17 @@
     if (scene.hasLoaded) go(); else scene.addEventListener('loaded', go, { once: true });
   });
   const modeBtn = document.getElementById('mode');
-  let flat = false; try { flat = localStorage.getItem('cardsMode') === 'flat'; } catch (e) {}
-  const applyMode = () => {            // hand: the diorama leans toward you; flat: it stands up off a card lying on a table
-    document.querySelectorAll('.wrap').forEach((w) => w.setAttribute('rotation', (flat ? 90 : 20) + ' 0 0'));
-    modeBtn.textContent = flat ? 'Card lying on a table' : 'Holding the card up';
+  let face = false; try { face = localStorage.getItem('cardsMode2') === 'face'; } catch (e) {}
+  const applyMode = () => {            // default: the scene floats just above the card and is locked to it, so tilting the card tilts the scene
+    document.querySelectorAll('.wrap').forEach((w) => {
+      if (!w.dataset.base) w.dataset.base = parseFloat(w.getAttributeNode('scale').value);      // the raw number written in the markup   // remember each model's own scale
+      const k = Number(w.dataset.base) * (face ? 1 : 0.7);                         // floating mode is smaller so it stays over the card
+      w.setAttribute('scale', k + ' ' + k + ' ' + k);
+      w.setAttribute('rotation', (face ? 20 : 75) + ' 0 0'); w.setAttribute('position', '0 0 ' + (face ? 0.04 : 0.2));
+    });
+    modeBtn.textContent = face ? 'Facing me' : 'Floating above the card';
   };
-  modeBtn.addEventListener('click', () => { flat = !flat; try { localStorage.setItem('cardsMode', flat ? 'flat' : 'hand'); } catch (e) {} applyMode(); });
+  modeBtn.addEventListener('click', () => { face = !face; try { localStorage.setItem('cardsMode2', face ? 'face' : 'above'); } catch (e) {} applyMode(); });
   applyMode();
   scene.addEventListener('arReady', () => { loading.style.opacity = 0; setTimeout(() => loading.remove(), 500); hint.classList.add('show'); modeBtn.style.display = 'block'; });
   scene.addEventListener('arError', () => showError('Camera unavailable'));
