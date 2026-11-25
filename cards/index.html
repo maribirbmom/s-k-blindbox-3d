@@ -37,8 +37,8 @@
   The card lies flat on the XY plane with +Z toward the viewer, so models are rotated 90° on X to stand upright.
   Card 0 model: diorama base ~4 units wide, scaled to ~0.9 of the card width.
 -->
-<a-scene mindar-image="imageTargetSrc: ./models/targets.mind; maxTrack: 2; filterMinCF: 0.001; filterBeta: 1000; missTolerance: 10; warmupTolerance: 3; uiLoading: no; uiScanning: no; uiError: yes; autoStart: false"
-         color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true"
+<a-scene mindar-image="imageTargetSrc: ./models/targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 5000; missTolerance: 12; warmupTolerance: 2; uiLoading: no; uiScanning: no; uiError: yes; autoStart: false"
+         color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true; antialias: true; maxCanvasWidth: 1100; maxCanvasHeight: 1100; precision: medium"
          vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
   <a-assets>
   </a-assets>
@@ -183,14 +183,21 @@
   applyMode();
   scene.addEventListener('arReady', () => { loading.style.opacity = 0; setTimeout(() => loading.remove(), 500); hint.classList.add('show'); modeBtn.style.display = 'block'; });
   scene.addEventListener('arError', () => showError('Camera unavailable'));
+  const NAMES = ['Back in the day', 'Aloo Tikki Day', 'It Takes Two', 'Best Friend', 'Puri Gossips', 'Late Night Philosophy', 'Couch Crew', 'Generational Selfie', 'Selfie Squad', 'Birthday Special', 'Wig Day', 'Family Trip'];
+  const hintText = hint.querySelector('span'); const IDLE = hintText.textContent;
+  const say = (msg) => { hintText.textContent = msg; hint.classList.add('show'); };
   document.querySelectorAll('[mindar-image-target]').forEach((t) => {
+    const idx = Number(t.getAttribute('mindar-image-target').match(/\d+/)[0]);
+    const m = t.querySelector('a-gltf-model');
+    m.addEventListener('model-loaded', () => hint.classList.remove('show'));
+    m.addEventListener('model-error', () => say('Could not load ' + NAMES[idx] + ' - check your connection'));
     t.addEventListener('targetFound', () => {
-      hint.classList.remove('show');
-      const m = t.querySelector('a-gltf-model');
-      if (m && !m.getAttribute('gltf-model')) m.setAttribute('gltf-model', m.dataset.src);      // download this card's model the first time it is seen
+      if (!m.getAttribute('gltf-model')) { say('Found ' + NAMES[idx] + ' - loading it\u2026'); m.setAttribute('gltf-model', m.dataset.src); }   // download this card's model the first time it is seen
+      else hint.classList.remove('show');
     });
-    t.addEventListener('targetLost', () => hint.classList.add('show'));
+    t.addEventListener('targetLost', () => say(IDLE));
   });
+  say(IDLE);
 </script>
 </body>
 </html>
